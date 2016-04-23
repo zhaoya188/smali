@@ -88,4 +88,8 @@ public class DeodexCommand extends DisassembleCommand {
     @Override protected boolean needsClassPath() {
         return true;
     }
+
+    @Override protected boolean showDeodexWarning() {
+        return false;
+    }
 }
