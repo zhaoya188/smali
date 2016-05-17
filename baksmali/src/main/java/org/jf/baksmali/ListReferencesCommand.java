@@ -33,6 +33,7 @@ package org.jf.baksmali;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import com.google.common.collect.Lists;
 import org.jf.dexlib2.dexbacked.DexBackedDexFile;
 import org.jf.dexlib2.iface.reference.Reference;
 import org.jf.dexlib2.util.ReferenceUtil;
@@ -52,7 +53,7 @@ public abstract class ListReferencesCommand extends DexInputCommand {
     @Parameter(description = "<file> - A dex/apk/oat/odex file. For apk or oat files that contain multiple dex " +
             "files, you can specify which dex file to disassemble by appending the name of the dex file with a " +
             "colon. E.g. \"something.apk:classes2.dex\"")
-    private List<String> inputList;
+    private List<String> inputList = Lists.newArrayList();
 
     public ListReferencesCommand(@Nonnull JCommander jc, int referenceType) {
         this.jc = jc;

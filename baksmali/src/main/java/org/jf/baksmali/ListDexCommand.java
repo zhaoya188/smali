@@ -34,9 +34,11 @@ package org.jf.baksmali;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
+import com.google.common.collect.Lists;
 import org.jf.dexlib2.dexbacked.OatFile;
 import org.jf.dexlib2.dexbacked.raw.HeaderItem;
 import org.jf.dexlib2.dexbacked.raw.OdexHeaderItem;
+import org.jf.util.jcommander.ExtendedParameters;
 
 import javax.annotation.Nonnull;
 import java.io.*;
@@ -47,6 +49,9 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 @Parameters(commandDescription = "Lists the dex files in an apk/oat file.")
+@ExtendedParameters(
+        commandName = "dex",
+        commandAliases = { "d" })
 public class ListDexCommand implements Command {
 
     @Nonnull private final JCommander jc;
@@ -56,7 +61,7 @@ public class ListDexCommand implements Command {
     private boolean help;
 
     @Parameter(description = "<file> - An apk or oat file.")
-    private List<String> inputList;
+    private List<String> inputList = Lists.newArrayList();
 
     public ListDexCommand(@Nonnull JCommander jc) {
         this.jc = jc;

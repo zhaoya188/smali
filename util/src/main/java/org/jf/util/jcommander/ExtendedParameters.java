@@ -29,21 +29,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.jf.baksmali;
+package org.jf.util.jcommander;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameters;
-import org.jf.dexlib2.ReferenceType;
-import org.jf.util.jcommander.ExtendedParameters;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-import javax.annotation.Nonnull;
-
-@Parameters(commandDescription = "Lists the methods in a dex file's method table.")
-@ExtendedParameters(
-        commandName = "methods",
-        commandAliases = { "method", "m" })
-public class ListMethodsCommand extends ListReferencesCommand {
-    public ListMethodsCommand(@Nonnull JCommander jc) {
-        super(jc, ReferenceType.METHOD);
-    }
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ExtendedParameters {
+    boolean includeParametersInUsage() default false;
+    String commandName();
+    String[] commandAliases() default { };
+    String postfixDescription() default "";
 }

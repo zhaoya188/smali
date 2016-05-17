@@ -28,7 +28,7 @@
 
 package org.jf.baksmali;
 
-import com.beust.jcommander.internal.Lists;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import org.jf.baksmali.Adaptors.ClassDefinition;
 import org.jf.dexlib2.iface.ClassDef;

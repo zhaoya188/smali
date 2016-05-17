@@ -34,10 +34,10 @@ package org.jf.baksmali;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
-import com.beust.jcommander.internal.Lists;
-import com.beust.jcommander.internal.Maps;
 import com.beust.jcommander.validators.PositiveInteger;
 import org.jf.dexlib2.DexFileFactory;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.jf.dexlib2.analysis.ClassPath;
 import org.jf.dexlib2.dexbacked.DexBackedDexFile;
 import org.jf.dexlib2.dexbacked.OatFile;
@@ -45,15 +45,19 @@ import org.jf.dexlib2.iface.DexFile;
 import org.jf.dexlib2.util.SyntheticAccessorResolver;
 import org.jf.util.StringWrapper;
 import org.jf.util.jcommander.CommaColonParameterSplitter;
+import org.jf.util.jcommander.ExtendedParameter;
+import org.jf.util.jcommander.ExtendedParameters;
 
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Parameters(commandDescription = "Disassembles a dex file.")
+@ExtendedParameters(
+        commandName = "disassemble",
+        commandAliases = { "dis", "d" })
 public class DisassembleCommand extends DexInputCommand {
 
     @Nonnull private final JCommander jc;
@@ -64,6 +68,7 @@ public class DisassembleCommand extends DexInputCommand {
 
     @Parameter(names = {"-a", "--api"},
             description = "The numeric api level of the file being disassembled.")
+    @ExtendedParameter(argumentNames = "api")
     private int apiLevel = 15;
 
     @Parameter(names = "--debug-info", arity = 1,
@@ -84,7 +89,7 @@ public class DisassembleCommand extends DexInputCommand {
                     "when analyzing the dex file. These will be added to the classpath after any bootclasspath " +
                     "entries.",
             splitter = CommaColonParameterSplitter.class)
-    private List<String> classPath = new ArrayList<String>();
+    private List<String> classPath = Lists.newArrayList();
 
     @Parameter(names = {"-d", "--classpath-dir"},
             description = "A directory to search for classpath files. This option can be used multiple times to " +
@@ -101,7 +106,7 @@ public class DisassembleCommand extends DexInputCommand {
                     "comment with the name of the resource being referenced. The value should be a comma/colon" +
                     "separated list of prefix=file pairs. For example R=res/values/public.xml:android.R=" +
                     "$ANDROID_HOME/platforms/android-19/data/res/values/public.xml")
-    private List<String> resourceIdFiles = new ArrayList<String>();
+    private List<String> resourceIdFiles = Lists.newArrayList();
 
     @Parameter(names = {"-j", "--jobs"},
             description = "The number of threads to use. Defaults to the number of cores available.",
@@ -155,7 +160,7 @@ public class DisassembleCommand extends DexInputCommand {
     @Parameter(description = "<file> - A dex/apk/oat/odex file. For apk or oat files that contain multiple dex " +
             "files, you can specify which dex file to disassemble by appending the name of the dex file with a " +
             "colon. E.g. \"something.apk:classes2.dex\"")
-    private List<String> inputList;
+    private List<String> inputList = Lists.newArrayList();
 
     public DisassembleCommand(@Nonnull JCommander jc) {
         this.jc = jc;
@@ -177,11 +182,12 @@ public class DisassembleCommand extends DexInputCommand {
         File dexFileFile = new File(input);
         String dexFileEntry = null;
         if (!dexFileFile.exists()) {
-            int colonIndex = input.lastIndexOf(':');
+            String filename = dexFileFile.getName();
+            int colonIndex = filename.indexOf(':');
 
             if (colonIndex >= 0) {
-                dexFileFile = new File(input.substring(0, colonIndex));
-                dexFileEntry = input.substring(colonIndex + 1);
+                dexFileFile = new File(dexFileFile.getParent(), filename.substring(0, colonIndex));
+                dexFileEntry = filename.substring(colonIndex + 1);
             }
 
             if (!dexFileFile.exists()) {

@@ -34,13 +34,21 @@ package org.jf.baksmali;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
+import com.google.common.collect.Lists;
 import org.jf.util.ConsoleUtil;
 import org.jf.util.StringWrapper;
+import org.jf.util.jcommander.ExtendedCommands;
+import org.jf.util.jcommander.ExtendedParameter;
+import org.jf.util.jcommander.ExtendedParameters;
+import org.jf.util.jcommander.HelpFormatter;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
 @Parameters(commandDescription = "Shows usage information")
+@ExtendedParameters(
+        commandName = "help",
+        commandAliases = { "h" })
 public class HelpCommand implements Command {
     @Nonnull private final JCommander jc;
 
@@ -48,12 +56,15 @@ public class HelpCommand implements Command {
         this.jc = jc;
     }
 
-    @Parameter(description = "If specified, only show the usage information for the given commands")
-    private List<String> commands;
+    @Parameter(description = "If specified, show the detailed usage information for the given commands")
+    @ExtendedParameter(argumentNames = "commands")
+    private List<String> commands = Lists.newArrayList();
 
     public void run() {
         if (commands == null || commands.isEmpty()) {
-            jc.usage();
+            System.out.println(new HelpFormatter()
+                    .width(ConsoleUtil.getConsoleWidth())
+                    .format(jc));
         } else {
             for (String cmd : commands) {
                 if (cmd.equals("register-info")) {
@@ -79,13 +90,26 @@ public class HelpCommand implements Command {
                         System.out.println(line);
                     }
                 } else {
-                    jc.usage(cmd);
+                    JCommander command = ExtendedCommands.getSubcommand(jc, cmd);
+                    if (command == null) {
+                        System.err.println("No such command: " + cmd);
+                        System.out.println(new HelpFormatter()
+                                .width(ConsoleUtil.getConsoleWidth())
+                                .format(jc));
+                    } else {
+                        System.out.println(new HelpFormatter()
+                                .width(ConsoleUtil.getConsoleWidth())
+                                .format(command));
+                    }
                 }
             }
         }
     }
 
     @Parameters(hidden =  true)
+    @ExtendedParameters(
+            commandName = "hlep"
+    )
     public static class HlepCommand extends HelpCommand {
         public HlepCommand(@Nonnull JCommander jc) {
             super(jc);

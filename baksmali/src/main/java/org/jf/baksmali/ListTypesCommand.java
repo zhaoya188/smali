@@ -34,10 +34,14 @@ package org.jf.baksmali;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameters;
 import org.jf.dexlib2.ReferenceType;
+import org.jf.util.jcommander.ExtendedParameters;
 
 import javax.annotation.Nonnull;
 
 @Parameters(commandDescription = "Lists the type ids in a dex file's type table.")
+@ExtendedParameters(
+        commandName = "types",
+        commandAliases = { "type", "t" })
 public class ListTypesCommand extends ListReferencesCommand {
     public ListTypesCommand(@Nonnull JCommander jc) {
         super(jc, ReferenceType.TYPE);

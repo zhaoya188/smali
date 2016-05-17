@@ -42,6 +42,8 @@ import org.jf.dexlib2.iface.ClassDef;
 import org.jf.dexlib2.iface.DexFile;
 import org.jf.dexlib2.iface.Method;
 import org.jf.util.jcommander.CommaColonParameterSplitter;
+import org.jf.util.jcommander.ExtendedParameter;
+import org.jf.util.jcommander.ExtendedParameters;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -49,6 +51,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Parameters(commandDescription = "Lists the virtual method tables for classes in a dex file.")
+@ExtendedParameters(
+        commandName = "vtables",
+        commandAliases = { "vtable", "v" })
 public class ListVtablesCommand extends DexInputCommand {
 
     @Nonnull private final JCommander jc;
@@ -59,12 +64,14 @@ public class ListVtablesCommand extends DexInputCommand {
 
     @Parameter(names = {"-a", "--api"},
             description = "The numeric api level of the file being loaded.")
+    @ExtendedParameter(argumentNames = "api")
     public int apiLevel = 15;
 
-    @Parameter(description = "<file> - A dex/apk/oat/odex file. For apk or oat files that contain multiple dex " +
+    @Parameter(description = "A dex/apk/oat/odex file. For apk or oat files that contain multiple dex " +
             "files, you can specify which dex file to disassemble by appending the name of the dex file with a " +
             "colon. E.g. \"something.apk:classes2.dex\"")
-    private List<String> inputList;
+    @ExtendedParameter(argumentNames = "file")
+    private List<String> inputList = Lists.newArrayList();
 
     @Parameter(names = {"-b", "--bootclasspath"},
             description = "A comma/colon separated list of the bootclasspath jar/oat files to include in the " +

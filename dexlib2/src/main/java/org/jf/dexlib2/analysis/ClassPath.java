@@ -31,16 +31,12 @@
 
 package org.jf.dexlib2.analysis;
 
-import com.beust.jcommander.internal.Sets;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
+import com.google.common.collect.*;
 import com.google.common.io.Files;
 import com.google.common.primitives.Ints;
 import org.jf.dexlib2.DexFileFactory;
@@ -335,8 +331,10 @@ public class ClassPath {
                     try {
                         DexFileFactory.loadDexFile(child, 15);
                     } catch (ExceptionWithContext ex) {
-                        // Don't add it to the results if it can't be loaded
-                        continue;
+                        if (!(ex instanceof MultipleDexFilesException)) {
+                            // Don't add it to the results if it can't be loaded
+                            continue;
+                        }
                     }
                     result.add(child);
                 }

@@ -34,10 +34,14 @@ package org.jf.baksmali;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
+import org.jf.util.jcommander.ExtendedParameters;
 
 import javax.annotation.Nonnull;
 
 @Parameters(commandDescription = "Lists various objects in a dex file.")
+@ExtendedParameters(
+        commandName = "list",
+        commandAliases = { "l" })
 public class ListCommand implements Command {
 
     @Nonnull private final JCommander jc;

@@ -38,11 +38,16 @@ import org.jf.dexlib2.analysis.CustomInlineMethodResolver;
 import org.jf.dexlib2.analysis.InlineMethodResolver;
 import org.jf.dexlib2.dexbacked.DexBackedOdexFile;
 import org.jf.dexlib2.iface.DexFile;
+import org.jf.util.jcommander.ExtendedParameters;
 
 import javax.annotation.Nonnull;
 import java.io.File;
+import java.io.IOException;
 
 @Parameters(commandDescription = "Deodexes an odex/oat file")
+@ExtendedParameters(
+        commandName = "deodex",
+        commandAliases = { "de", "x" })
 public class DeodexCommand extends DisassembleCommand {
     @Parameter(names = "--check-package-private-access",
             description = "Use the package-private access check when calculating vtable indexes. This should " +
@@ -74,7 +79,13 @@ public class DeodexCommand extends DisassembleCommand {
                     System.err.println(String.format("Could not find file: %s", inlineTable));
                     System.exit(-1);
                 }
-                options.inlineResolver = new CustomInlineMethodResolver(options.classPath, inlineTable);
+                try {
+                    options.inlineResolver = new CustomInlineMethodResolver(options.classPath, inlineTableFile);
+                } catch (IOException ex) {
+                    System.err.println(String.format("Error while reading file: %s", inlineTableFile));
+                    ex.printStackTrace(System.err);
+                    System.exit(-1);
+                }
             }
         }
 

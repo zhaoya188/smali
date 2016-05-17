@@ -34,10 +34,14 @@ package org.jf.baksmali;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameters;
 import org.jf.dexlib2.ReferenceType;
+import org.jf.util.jcommander.ExtendedParameters;
 
 import javax.annotation.Nonnull;
 
 @Parameters(commandDescription = "Lists the strings in a dex file's string table.")
+@ExtendedParameters(
+        commandName = "strings",
+        commandAliases = { "string", "str", "s" })
 public class ListStringsCommand extends ListReferencesCommand {
     public ListStringsCommand(@Nonnull JCommander jc) {
         super(jc, ReferenceType.STRING);

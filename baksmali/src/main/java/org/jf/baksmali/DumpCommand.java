@@ -41,11 +41,15 @@ import org.jf.dexlib2.dexbacked.OatFile;
 import org.jf.dexlib2.dexbacked.raw.RawDexFile;
 import org.jf.dexlib2.dexbacked.raw.util.DexAnnotator;
 import org.jf.util.ConsoleUtil;
+import org.jf.util.jcommander.ExtendedParameters;
 
 import javax.annotation.Nonnull;
 import java.io.*;
 
 @Parameters(commandDescription = "Prints an annotated hex dump for the given dex file")
+@ExtendedParameters(
+        commandName = "dump",
+        commandAliases = { "du" })
 public class DumpCommand implements Command {
 
     @Nonnull

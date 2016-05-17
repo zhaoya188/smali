@@ -43,6 +43,7 @@ import org.jf.dexlib2.iface.DexFile;
 import org.jf.dexlib2.iface.reference.FieldReference;
 import org.jf.util.SparseArray;
 import org.jf.util.jcommander.CommaColonParameterSplitter;
+import org.jf.util.jcommander.ExtendedParameters;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -50,6 +51,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Parameters(commandDescription = "Lists the instance field offsets for classes in a dex file.")
+@ExtendedParameters(
+        commandName = "fieldoffsets",
+        commandAliases = { "fieldoffset", "fo" })
 public class ListFieldOffsetsCommand extends DexInputCommand {
 
     @Nonnull private final JCommander jc;
@@ -65,7 +69,7 @@ public class ListFieldOffsetsCommand extends DexInputCommand {
     @Parameter(description = "<file> - A dex/apk/oat/odex file. For apk or oat files that contain multiple dex " +
             "files, you can specify which dex file to disassemble by appending the name of the dex file with a " +
             "colon. E.g. \"something.apk:classes2.dex\"")
-    private List<String> inputList;
+    private List<String> inputList = Lists.newArrayList();
 
     @Parameter(names = {"-b", "--bootclasspath"},
             description = "A comma/colon separated list of the bootclasspath jar/oat files to include in the " +

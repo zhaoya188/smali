@@ -34,16 +34,21 @@ package org.jf.baksmali;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
+import com.google.common.collect.Lists;
 import org.jf.dexlib2.Opcodes;
 import org.jf.dexlib2.dexbacked.DexBackedDexFile;
 import org.jf.dexlib2.dexbacked.DexBackedOdexFile;
 import org.jf.dexlib2.dexbacked.OatFile;
+import org.jf.util.jcommander.ExtendedParameters;
 
 import javax.annotation.Nonnull;
 import java.io.*;
 import java.util.List;
 
 @Parameters(commandDescription = "Lists the stored classpath entries in an odex/oat file.")
+@ExtendedParameters(
+        commandName = "classpath",
+        commandAliases = { "bootclasspath", "cp", "bcp" })
 public class ListClassPathCommand implements Command {
 
     @Nonnull private final JCommander jc;
@@ -53,7 +58,7 @@ public class ListClassPathCommand implements Command {
     private boolean help;
 
     @Parameter(description = "<file> - An oat/odex file")
-    private List<String> inputList;
+    private List<String> inputList = Lists.newArrayList();
 
     public ListClassPathCommand(@Nonnull JCommander jc) {
         this.jc = jc;

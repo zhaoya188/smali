@@ -34,19 +34,27 @@ package org.jf.baksmali;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import org.jf.baksmali.HelpCommand.HlepCommand;
+import org.jf.util.ConsoleUtil;
+import org.jf.util.jcommander.ExtendedCommands;
+import org.jf.util.jcommander.ExtendedParameters;
+import org.jf.util.jcommander.HelpFormatter;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+@ExtendedParameters(
+        includeParametersInUsage = true,
+        commandName = "baksmali",
+        postfixDescription = "See baksmali help <command> for more information about a specific command")
 public class Main {
     public static final String VERSION = loadVersion();
 
-    @Parameter(names = {"-h", "-?", "--help"}, help = true,
+    @Parameter(names = {"--help", "-h", "-?"}, help = true,
             description = "Show usage information")
     private boolean help;
 
-    @Parameter(names = {"-v", "--version"}, help = true,
+    @Parameter(names = {"--version", "-v"}, help = true,
             description = "Print the version of baksmali and then exit")
     public boolean version;
 
@@ -54,21 +62,24 @@ public class Main {
         Main main = new Main();
 
         JCommander jc = new JCommander(main);
+        jc.setProgramName("baksmali");
 
-        jc.addCommand("disassemble", new DisassembleCommand(jc), "dis", "d");
-        jc.addCommand("deodex", new DeodexCommand(jc), "de", "x");
-        jc.addCommand("dump", new DumpCommand(jc), "du");
-        jc.addCommand("help", new HelpCommand(jc), "h");
-        jc.addCommand("hlep", new HlepCommand(jc));
+        ExtendedCommands.addExtendedCommand(jc, new DisassembleCommand(jc));
+        ExtendedCommands.addExtendedCommand(jc, new DeodexCommand(jc));
+        ExtendedCommands.addExtendedCommand(jc, new DumpCommand(jc));
+        ExtendedCommands.addExtendedCommand(jc, new HelpCommand(jc));
+        ExtendedCommands.addExtendedCommand(jc, new HlepCommand(jc));
 
         ListCommand listCommand = new ListCommand(jc);
-        jc.addCommand("list", listCommand, "l");
+        ExtendedCommands.addExtendedCommand(jc, listCommand);
         listCommand.registerSubCommands();
 
         jc.parse(args);
 
         if (jc.getParsedCommand() == null || main.help) {
-            jc.usage();
+            System.out.println(new HelpFormatter()
+                    .width(ConsoleUtil.getConsoleWidth())
+                    .format(jc));
             return;
         }
 
